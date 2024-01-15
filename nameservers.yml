@@ -1,0 +1,61 @@
+- hosts: ubuntu_hosts
+  become: true
+  tasks:
+
+    - name: Ensure Bind9 DNS software packages are installed on nameservers
+      apt: 
+        name: "{{ item }}"
+        state: latest
+        update_cache: yes
+      loop: 
+        - bind9
+        - bind9utils
+        - bind9-doc
+        - dnsutils
+
+    - name: Export config files to primary nameserver
+      copy:
+        src: "{{ item }}" 
+        dest: /etc/bind
+        owner: root 
+      loop:
+        - roles/templates/10.0.0.rev
+        - roles/templates/mytechlab.com
+        - roles/templates/named.conf.primary
+      when: ansible_default_ipv4.address == "10.0.0.5"    
+
+    - name: Export config files to secondary nameserver
+      copy:
+        src: "{{ item }}" 
+        dest: /etc/bind
+        owner: root
+      loop:
+        - roles/templates/10.0.0.rev
+        - roles/templates/mytechlab.com
+        - roles/templates/named.conf.secondary
+      when: ansible_default_ipv4.address == "10.0.0.6"
+
+    - name: Copy inline content to named.conf file of primary DNS server
+      ansible.builtin.copy:
+        content: 'include "/etc/bind/named.conf.primary";'
+        dest: /etc/bind/named.conf
+        owner: root
+        backup: yes
+      when: ansible_default_ipv4.address == "10.0.0.5"
+      notify: Restart Bind9
+
+    - name: Copy inline content to named.conf file of secondary DNS server
+      ansible.builtin.copy:
+        content: 'include "/etc/bind/named.conf.secondary";'
+        dest: /etc/bind/named.conf
+        owner: root
+        backup: yes
+      when: ansible_default_ipv4.address == "10.0.0.6" 
+      notify: Restart Bind9
+   
+  handlers:
+    - name: Restart Bind9
+      ansible.builtin.service:
+        name: bind9
+        state: restarted  
+        enabled: yes

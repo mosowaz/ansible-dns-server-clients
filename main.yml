@@ -1,0 +1,12 @@
+- import_playbook: nameservers.yml
+
+- hosts: all
+  become: true
+  tasks:
+
+   - name: Populate resolv.conf file with nameservers and search domain
+     ansible.builtin.copy:
+       src: roles/templates/resolv.conf
+       dest: /etc/resolv.conf
+       owner: root
+              

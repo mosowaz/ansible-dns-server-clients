@@ -1,0 +1,13 @@
+almalinux_hosts:
+  hosts:
+    10.0.0.8:
+    
+ubuntu_hosts:
+  hosts:
+    10.0.0.6:
+    localhost:
+
+suse_hosts:
+  hosts:
+    10.0.0.7:
+    10.0.0.9:
