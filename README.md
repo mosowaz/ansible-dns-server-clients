@@ -2,19 +2,19 @@
 Ansible playbook to automate bind9 implementation on primary, secondary dns server and clients
 
 ## Directory Structure
-ansible-dns-server-clients/
-├── ansible.cfg
-├── main.yml
-├── nameservers.yml
-├── README.md
-└── roles
-    ├── inventory.yml
-    └── templates
-        ├── 10.0.0.rev
-        ├── mytechlab.com
-        ├── named.conf.primary
-        ├── named.conf.secondary
-        └── resolv.conf
+`ansible-dns-server-clients/
+ ├── ansible.cfg
+ ├── main.yml
+ ├── nameservers.yml
+ ├── README.md
+ └── roles
+     ├── inventory.yml
+     └── templates
+         ├── 10.0.0.rev
+         ├── mytechlab.com
+         ├── named.conf.primary
+         ├── named.conf.secondary
+         └── resolv.conf`
 
 main.yml file
 ```
