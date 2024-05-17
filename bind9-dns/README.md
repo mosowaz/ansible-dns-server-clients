@@ -7,15 +7,22 @@ $ sudo apt install bind9 bind9utils dnsutils
 ```
 
 Modify the name.conf configuration file to include your zones
-`$ sudo vim /etc/bind/named.conf`
-Copy items in named.conf into this file
+```
+$ sudo vim /etc/bind/named.conf
+```
+Copy items in named.conf into this file.
 
 Create zone file (Forward and Reverse), and fill them with the respective files.
-`$ sudo vim /etc/bind/mytechlab.com`
-
-`$ sudo vim /etc/bind/10.0.0.rev'
+```
+$ sudo vim /etc/bind/mytechlab.com
+```
+and
+```
+$ sudo vim /etc/bind/10.0.0.rev
+```
 
 ## Modify the the resolver in each node
+
 `$ sudo vim /etc/resolv.conf`
 
 Fill the resolv.conf file with the contents bellow
