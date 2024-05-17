@@ -21,7 +21,7 @@ and
 $ sudo vim /etc/bind/10.0.0.rev
 ```
 
-## Modify the the resolver in each node
+## Modify the resolv.conf file in each server
 
 `$ sudo vim /etc/resolv.conf`
 
