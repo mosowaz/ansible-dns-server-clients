@@ -1,0 +1,19 @@
+; BIND data file for local loopback interface
+;
+$TTL    604800
+$ORIGIN 0.0.10.IN-ADDR.ARPA.
+@       IN      SOA     ns1.mytechlab.com. root.localhost. (
+                     2024011200         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+@       IN      NS      ns1.mytechlab.com.
+
+; RR
+5       IN      PTR     master1.mytechlab.com.
+6       IN      PTR     master2.mytechlab.com.
+10      IN      PTR     haproxy.mytechlab.com.
+11      IN      PTR     worker1.mytechlab.com.
+12      IN      PTR     worker2.mytechlab.com.
