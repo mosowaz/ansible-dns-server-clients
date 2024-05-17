@@ -1,67 +1,40 @@
-# ansible-kubernetes-setup
-The purpose of this project is to demonstrate the setup of kubernetes cluster, and using bind9 dns server with LDAP server to manage the cluster.
-There will be High Availabilty incorperated into the cluster (2 master nodes and 2 worker nodes).
-Another node will run HAproxy server, LDAP server and DNS server.
+## DNS Server installation and configuration
 
-For complete kubernetes cluster playbook, run the main.yml
+Run the following commands to install bind9 packages
 ```
-$ ansible-playbook main.yml -i inventory.yml
+$ sudo apt update && sudo apt dist-upgrade -y
+$ sudo apt install bind9 bind9utils dnsutils
 ```
 
-For individual play, each step is listed below. 
-## Step 1
-Remove swap from Master and Worker nodes
+Modify the name.conf configuration file to include your zones
 ```
-- hosts: all
-  tasks:
-  
-    - name: Remove swap from "/etc/fstab"
-      lineinfile:
-        path: /etc/fstab
-        regexp: /swap.imp*
-        state: absent
-        backup: yes
-      
-    - name: Run swappoff command on hosts
-      command: swapoff -a
+$ sudo vim /etc/bind/named.conf
 ```
-Confirm that swap is removed by running ad-hoc command
+Copy items in named.conf into this file.
 
-`$ ansible all -m command -a "free -h" `
-
-## Step 2
-Run containerd.yml playbook to setup config files and create required files for network bridge, 
-and modules (br_netfilter and overlay). Also install the Container Network Interface software (kubernetes-cni)
-
-`$ ansible-playbook containerd.yml -i inventory.yml ` 
-
-## Step 3
-Run the playbook for installing kubeadm, kubectl, and kubelet
-
-`$ ansible-playbook kube-pkg-installs.yml -i inventory.yml ` 
-
-## Step 4 
-Initialize the main master node (kmaster1)
+Create zone file (Forward and Reverse), and fill them with the respective files.
 ```
-$ sudo kubeadm init --apiserver-advertise-address=10.0.0.5 --upload-certs --pod-network-cidr=10.0.0.0/24 --control-plane-endpoint="10.0.0.10:6443"
+$ sudo vim /etc/bind/mytechlab.com
+```
+and
+```
+$ sudo vim /etc/bind/10.0.0.rev
 ```
 
-Then join the 2nd master (kmaster2) to the cluster with "--contol-plane"
+## Modify the the resolver in each node
+
+`$ sudo vim /etc/resolv.conf`
+
+Fill the resolv.conf file with the contents bellow
 ```
-$ sudo kubeadm join 10.0.0.5:6443 --contol-plane --token ov3b0h.mbjzzpcm7v9mg69z --discovery-token-ca-cert-hash sha256:d798e91ef19a981d8f7e04195a0d593f3010edd15e487898bcec4d63f947ab23
+nameserver 10.0.0.10
+nameserver 8.8.8.8
+search mytechlab.com
 ```
 
-Lastly, join the worker nodes (kworker1 and kworker2) with the join command without "--control-plane"
+Verify DNS service is working by pinging each node with thier hostname
+i.e ping master1, ping haproxy
 
-On the control plane nodes, install the Container Network (CNI) plugin.
-```
-$ curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml -O
-
-$ kubectl apply -f calico.yaml
-```
-validate that all nodes and pods are healthy
-
-`$ kubectl get nodes`
-`$ kubectl get all -A`
+Or you can use the "host",  "dig", and "nslookup" utility
 
 

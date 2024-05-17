@@ -1,5 +1,0 @@
-- import_playbook: remove-swap.yml
-
-- import_playbook: containerd.yml
-
-- import_playbook: kube-pkg-installs.yml
