@@ -41,6 +41,14 @@ Run the playbook for installing kubeadm, kubectl, and kubelet
 `$ ansible-playbook kube-pkg-installs.yml -i inventory.yml ` 
 
 ## Step 4 
+Initialize the main master node (kmaster1)
+`$ sudo kubeadm init --apiserver-advertise-address=10.0.0.5 --upload-certs --pod-network-cidr=10.0.0.0/24 --control-plane-endpoint="10.0.0.10:6443"`
+
+Then join the 2nd master (kmaster2) to the cluster with "--contol-plane"
+`sudo kubeadm join 10.0.0.5:6443 --contol-plane --token ov3b0h.mbjzzpcm7v9mg69z --discovery-token-ca-cert-hash sha256:d798e91ef19a981d8f7e04195a0d593f3010edd15e487898bcec4d63f947ab23`
+
+Lastly, join the worker nodes (kworker1 and kworker2) with the join command without "--control-plane"
+
 On the control plane nodes, install the Container Network (CNI) plugin.
 ```
 $ curl https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/calico.yaml -O
@@ -51,3 +59,5 @@ validate that all nodes and pods are healthy
 
 `$ kubectl get nodes`
 `$ kubectl get all -A`
+
+
