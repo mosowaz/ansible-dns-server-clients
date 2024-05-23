@@ -25,13 +25,17 @@ $ sudo vim /etc/bind/10.0.0.rev
 
 `$ sudo vim /etc/resolv.conf`
 
-Fill the resolv.conf file with the contents bellow
+Fill the resolv.conf file with the contents below on DNS server and clients
 ```
 nameserver 10.0.0.10
 nameserver 8.8.8.8
 search mytechlab.com
 ```
-
+Edit /etc/systemd/resolv.conf file to "disable DNS Stub Listener".
+Run the command below on all hosts in the domain, including DNS server.
+```
+sudo sed -i 's/#DNSStubListener=yes/DNSStubListener=no/' /etc/systemd/resolved.conf 
+```
 Verify DNS service is working by pinging each node with thier hostname
 i.e ping master1, ping haproxy
 
